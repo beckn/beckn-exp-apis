@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface StepsRepository extends MongoRepository<Steps, Integer> {
     @Query("{eventId :?0}")
-    public List<Steps> findbyEventId(Integer eventId);
+    List<Steps> findbyEventId(String eventId);
 }

@@ -24,10 +24,11 @@ public class EventService {
         return stepsRepository.save(inputSteps);
     }
 
-    public EventSteps getEventsById(Integer eventId) {
+    public EventSteps getEventsById(String domainId) {
         EventSteps eventSteps = new EventSteps();
-        eventSteps.setEvent(eventRepository.findById(eventId).get());
-        eventSteps.setSteps(stepsRepository.findbyEventId(eventId));
+        Event event = eventRepository.findByDomainId(domainId).get(0);
+        eventSteps.setEvent(event);
+        eventSteps.setSteps(stepsRepository.findbyEventId(event.getId()));
         return eventSteps;
     }
 }
