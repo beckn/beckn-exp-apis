@@ -40,7 +40,13 @@ public class EventController {
 
     @GetMapping(value = "/events/{domainId}")
     public ResponseEntity<EventSteps> getEventsById(@PathVariable String domainId) {
-        EventSteps eventSteps = eventService.getEventsById(domainId);
-        return ResponseEntity.ok(eventSteps);
+        try {
+            EventSteps eventSteps = eventService.getEventsById(domainId);
+            return ResponseEntity.ok(eventSteps);
+        }catch (RuntimeException e)
+        {
+            return ResponseEntity.ok(null);
+        }
+
     }
 }

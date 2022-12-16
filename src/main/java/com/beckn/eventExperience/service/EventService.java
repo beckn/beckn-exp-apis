@@ -8,6 +8,8 @@ import com.beckn.eventExperience.repository.StepsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class EventService {
     @Autowired
@@ -26,7 +28,12 @@ public class EventService {
 
     public EventSteps getEventsById(String domainId) {
         EventSteps eventSteps = new EventSteps();
-        Event event = eventRepository.findByDomainId(domainId).get(0);
+        List<Event> events = eventRepository.findByDomainId(domainId);
+        if(events.isEmpty())
+        {
+            throw new RuntimeException();
+        }
+        Event event = events.get(0);
         eventSteps.setEvent(event);
         eventSteps.setSteps(stepsRepository.findbyEventId(event.getId()));
         return eventSteps;
