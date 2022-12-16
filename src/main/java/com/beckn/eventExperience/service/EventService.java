@@ -1,5 +1,6 @@
 package com.beckn.eventExperience.service;
 
+import com.beckn.eventExperience.exception.ExperienceException;
 import com.beckn.eventExperience.model.xc.Event;
 import com.beckn.eventExperience.model.xc.EventSteps;
 import com.beckn.eventExperience.model.xc.Steps;
@@ -29,9 +30,8 @@ public class EventService {
     public EventSteps getEventsById(String domainId) {
         EventSteps eventSteps = new EventSteps();
         List<Event> events = eventRepository.findByDomainId(domainId);
-        if(events.isEmpty())
-        {
-            throw new RuntimeException();
+        if (events.isEmpty()) {
+            throw new ExperienceException("E-101", "No data found in database for DomainId : " + domainId);
         }
         Event event = events.get(0);
         eventSteps.setEvent(event);

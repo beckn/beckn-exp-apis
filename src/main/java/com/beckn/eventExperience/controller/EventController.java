@@ -1,14 +1,16 @@
 package com.beckn.eventExperience.controller;
 
+import com.beckn.eventExperience.exception.ExperienceException;
 import com.beckn.eventExperience.model.xc.Domain;
 import com.beckn.eventExperience.model.xc.Event;
 import com.beckn.eventExperience.model.xc.EventSteps;
 import com.beckn.eventExperience.model.xc.Steps;
 import com.beckn.eventExperience.repository.DomainRepository;
+import com.beckn.eventExperience.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import com.beckn.eventExperience.service.EventService;
 
 @RestController
 @RequestMapping("/")
@@ -39,13 +41,12 @@ public class EventController {
     }
 
     @GetMapping(value = "/events/{domainId}")
-    public ResponseEntity<EventSteps> getEventsById(@PathVariable String domainId) {
+    public ResponseEntity<?> getEventsById(@PathVariable String domainId) {
         try {
             EventSteps eventSteps = eventService.getEventsById(domainId);
             return ResponseEntity.ok(eventSteps);
-        }catch (RuntimeException e)
-        {
-            return ResponseEntity.ok(null);
+        } catch (ExperienceException e) {
+            return new ResponseEntity<>(e.getErrorMsg(), HttpStatus.NOT_FOUND);
         }
 
     }
