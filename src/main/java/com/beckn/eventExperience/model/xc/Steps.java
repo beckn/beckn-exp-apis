@@ -17,7 +17,7 @@ import java.util.Date;
 public class Steps {
     @Id
     private int id;
-    private int eventId;
+    private String eventId;
     private String title;
     private String source;
     private String destination;

@@ -38,9 +38,9 @@ public class EventController {
         return ResponseEntity.ok(domain);
     }
 
-    @GetMapping(value = "/events/{eventId}")
-    public ResponseEntity<EventSteps> getEventsById(@PathVariable Integer eventId) {
-        EventSteps eventSteps = eventService.getEventsById(eventId);
+    @GetMapping(value = "/events/{domainId}")
+    public ResponseEntity<EventSteps> getEventsById(@PathVariable String domainId) {
+        EventSteps eventSteps = eventService.getEventsById(domainId);
         return ResponseEntity.ok(eventSteps);
     }
 }

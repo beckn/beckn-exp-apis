@@ -17,9 +17,9 @@ import java.util.Date;
 @Document(collection = "events")
 public class Event {
     @Id
-    private int id;
+    private String id;
     @NonNull
-    private int domain_id;
+    private String domainId;
     @NonNull
     private String title;
     @NonNull
