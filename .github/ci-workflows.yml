@@ -21,7 +21,7 @@ jobs:
           git checkout main
           git pull
           SHORT_SHA=$(git rev-parse --short HEAD)
-          docker build -t beckn-exp-apis:$SHORT_SHA -f client.dockerfile .
+          docker build -t beckn-exp-apis:$SHORT_SHA .
           docker stop beckn-exp-apis
           docker rm beckn-exp-apis
           docker run -d --network "host"  --name beckn-exp-apis beckn-exp-apis:$SHORT_SHA
