@@ -1,0 +1,29 @@
+name: Deploying exp-api using docker
+on:
+  push:
+    branches:
+    - main
+ 
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: deploying changes
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.BACKENDHOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd beckn-exp-apis
+          git checkout main
+          git pull
+          SHORT_SHA=$(git rev-parse --short HEAD)
+          docker build -t beckn-exp-apis:$SHORT_SHA -f client.dockerfile .
+          docker stop beckn-exp-apis
+          docker rm beckn-exp-apis
+          docker run -d --network "host"  --name beckn-exp-apis beckn-exp-apis:$SHORT_SHA
+          echo "printing docker image sha"
+          docker images --no-trunc --quiet client:$SHORT_SHA
