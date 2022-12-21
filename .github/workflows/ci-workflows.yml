@@ -1,4 +1,4 @@
-name: Deploying exp-api using docker
+name: Deploying exp-api (xc)using docker
 on:
   push:
     branches:
