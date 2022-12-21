@@ -18,4 +18,4 @@ COPY --from=build /sources/eventExperience/src/main/resources/application.proper
 # Run the eventExperience jar.
 ENTRYPOINT [ "bash", "-c", "java -jar /app/eventExperience.jar -spring.config.location=file:///app/application.properties" ]
 # Expose the port 8081 to the world, that is experience app is listening for API calls.
-EXPOSE 8081
+EXPOSE 8082
