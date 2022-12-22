@@ -30,15 +30,15 @@ public class ExperienceCenterService {
 
     public ExperienceResult getEventsById(String experienceId) {
         ExperienceResult experienceResult = new ExperienceResult();
-        List<Event> events = eventRepository.findByExperienceId(experienceId);
-        if (events.isEmpty()) {
-            throw new ExperienceException("", "", "E-101", "No data found in database for ExperienceId : " + experienceId);
-        }
         Experience experience = experienceRepository.findByExperienceId(experienceId);
         if (experience == null) {
             throw new ExperienceException("", "", "E-101", "No data found in database for ExperienceId : " + experienceId);
         }
         experienceResult.setExperience(experience);
+        List<Event> events = eventRepository.findByExperienceId(experienceId);
+        if (events.isEmpty()) {
+            //throw new ExperienceException("", "", "E-102", "No Events found in database for ExperienceId : " + experienceId);
+        }
         experienceResult.setEvents(events);
         return experienceResult;
     }

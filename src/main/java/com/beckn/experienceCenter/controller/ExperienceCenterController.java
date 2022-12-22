@@ -20,36 +20,40 @@ public class ExperienceCenterController {
 
     @PostMapping(value = "/xc/experience")
     public ResponseEntity<?> setupExperienceSession(@RequestBody ExperienceDTO inputSession) {
-        if(inputSession.getExperienceId() == null)
-        {
+        if (inputSession.getExperienceId() == null) {
             return new ResponseEntity<>("Experience id is missing.", HttpStatus.BAD_REQUEST);
         }
-        if(inputSession.getEventSourceAppId() == null)
-        {
+        if (inputSession.getEventSourceAppId() == null) {
             return new ResponseEntity<>("App id is missing.", HttpStatus.BAD_REQUEST);
         }
-        if(inputSession.getDomainId() == null)
-        {
+        if (inputSession.getDomainId() == null) {
             return new ResponseEntity<>("Domain Id is missing.", HttpStatus.BAD_REQUEST);
         }
-        Experience experience = experienceCenterService.setupExperienceSession(inputSession);
-        return ResponseEntity.ok(experience);
+        try {
+            Experience experience = experienceCenterService.setupExperienceSession(inputSession);
+            return ResponseEntity.ok(experience);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping(value = "/xc/experience")
     public ResponseEntity<?> closeExperienceSession(@RequestBody UpdateSessionDto updateSession) {
-        if(updateSession.getExperienceId() == null)
-        {
+        if (updateSession.getExperienceId() == null) {
             return new ResponseEntity<>("Experience id is missing.", HttpStatus.BAD_REQUEST);
         }
-        Experience experience = experienceCenterService.closeExperienceSession(updateSession);
-        return ResponseEntity.ok(experience);
+        try {
+            Experience experience = experienceCenterService.closeExperienceSession(updateSession);
+            return ResponseEntity.ok(experience);
+        } catch (ExperienceException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
     }
+
 
     @GetMapping(value = "/event/{experienceId}")
     public ResponseEntity<?> getEventsById(@PathVariable String experienceId) {
-        if(experienceId == null)
-        {
+        if (experienceId == null) {
             return new ResponseEntity<>("Experience id is missing.", HttpStatus.BAD_REQUEST);
         }
         try {
