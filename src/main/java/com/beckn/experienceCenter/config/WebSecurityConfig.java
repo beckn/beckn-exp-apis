@@ -14,6 +14,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,8 +49,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000/","https://experience.becknprotocol.io/","https://taxibap-staging.becknprotocol.io/"));
-        //config.setAllowedOrigins(Arrays.asList("http://localhost:3000/","https://*.becknprotocol.io/"));
+        //config.setAllowedOrigins(Arrays.asList("http://localhost:3000/","https://experience.becknprotocol.io/","https://taxibap-staging.becknprotocol.io/"));
+        config.setAllowedOrigins(Collections.singletonList("*"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         config.setAllowCredentials(true);
