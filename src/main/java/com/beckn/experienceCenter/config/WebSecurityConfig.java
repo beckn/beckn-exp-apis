@@ -48,7 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(Arrays.asList("http://localhost:3000/"));
+        //config.setAllowedOrigins(Arrays.asList("http://localhost:3000/","https://experience.becknprotocol.io/","https://taxibap-staging.becknprotocol.io/"));
+        config.setAllowedOrigins(Arrays.asList("http://localhost:3000/","https://*.becknprotocol.io/"));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Content-Type", "Authorization"));
         config.setAllowCredentials(true);
