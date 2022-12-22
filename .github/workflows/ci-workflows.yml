@@ -3,9 +3,7 @@ on:
   push:
     branches:
     - main
-  pull_request:
-    branches: [ "main" ]    
- 
+
 jobs:
   build:
     name: Build
@@ -26,6 +24,6 @@ jobs:
           docker build -t beckn-exp-apis:$SHORT_SHA .
           docker stop beckn-exp-apis
           docker rm beckn-exp-apis
-          docker run -d --network "host"  --name beckn-exp-apis beckn-exp-apis:$SHORT_SHA
+          docker run -d -p 8082:8082 --name beckn-exp-apis beckn-exp-apis:$SHORT_SHA
           echo "printing docker image sha"
           docker images --no-trunc --quiet client:$SHORT_SHA
