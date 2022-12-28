@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class ExperienceResponse {
     private String experienceId;
     private String experienceCenterId;
-    private ExperienceSource experienceSource;
+    private Subscriber experienceSource;
     private Boolean active;
     private ExperienceFeedback experienceFeedback;
     private ExperienceTimeline experienceTimeline;

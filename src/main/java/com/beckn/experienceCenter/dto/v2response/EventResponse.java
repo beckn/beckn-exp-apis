@@ -14,5 +14,6 @@ import org.springframework.stereotype.Component;
 @Setter
 public class EventResponse {
     private int eventId;
+    private String action;
     private Event event;
 }

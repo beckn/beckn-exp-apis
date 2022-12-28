@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class Event {
-    private EventSource eventSource;
-    private EventDestination eventDestination;
+    private Subscriber eventSource;
+    private Subscriber eventDestination;
     private EventMessage eventMessage;
     private EventTimeline eventTimeline;
     private String payload;

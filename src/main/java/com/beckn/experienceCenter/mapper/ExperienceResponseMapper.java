@@ -2,7 +2,6 @@ package com.beckn.experienceCenter.mapper;
 
 import com.beckn.experienceCenter.dto.ExperienceFeedback;
 import com.beckn.experienceCenter.dto.v2response.ExperienceResponse;
-import com.beckn.experienceCenter.dto.v2response.ExperienceSource;
 import com.beckn.experienceCenter.dto.v2response.ExperienceTimeline;
 import com.beckn.experienceCenter.dto.v2response.Subscriber;
 import com.beckn.experienceCenter.model.V2Application;
@@ -16,16 +15,15 @@ public class ExperienceResponseMapper {
         experienceSession.setExperienceId(experience.getExperience_id());
         experienceSession.setExperienceCenterId(experience.getExperience_center_id());
 
-        ExperienceSource experienceSource = new ExperienceSource(
-                new Subscriber(
-                        application.getApp_id(),
-                        application.getType(),
-                        application.getName(),
-                        application.getUri(),
-                        application.getDomain_id(),
-                        ""
-                ));
-        experienceSession.setExperienceSource(experienceSource);
+        Subscriber subscriber = new Subscriber(
+                application.getApp_id(),
+                application.getType(),
+                application.getName(),
+                application.getUri(),
+                application.getDomain_id(),
+                ""
+        );
+        experienceSession.setExperienceSource(subscriber);
 
         experienceSession.setActive(experience.getActive());
 

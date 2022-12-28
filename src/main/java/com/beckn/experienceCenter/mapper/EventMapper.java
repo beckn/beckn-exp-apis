@@ -1,6 +1,9 @@
 package com.beckn.experienceCenter.mapper;
 
-import com.beckn.experienceCenter.dto.v2response.*;
+import com.beckn.experienceCenter.dto.v2response.Event;
+import com.beckn.experienceCenter.dto.v2response.EventMessage;
+import com.beckn.experienceCenter.dto.v2response.EventTimeline;
+import com.beckn.experienceCenter.dto.v2response.Subscriber;
 import com.beckn.experienceCenter.model.V2Application;
 import com.beckn.experienceCenter.model.V2Event;
 import com.beckn.experienceCenter.model.V2EventMessage;
@@ -24,7 +27,6 @@ public class EventMapper {
         V2EventMessage v2EventMessage = eventMessageRepository.findByCode(v2Event.getEvent_code());
         EventMessage eventMessage = new EventMessage(
                 v2EventMessage.getCode(),
-                v2Event.getAction(),
                 v2EventMessage.getAction_message(),
                 v2EventMessage.getBap_message(),
                 v2EventMessage.getBpp_message()
@@ -32,25 +34,25 @@ public class EventMapper {
         event.setEventMessage(eventMessage);
 
         V2Application application = applicationRepository.findByAppId(v2Event.getSource_app_id());
-        EventSource eventSource = new EventSource(new Subscriber(
+        Subscriber eventSource = new Subscriber(
                 application.getApp_id(),
                 application.getType(),
                 application.getName(),
                 application.getUri(),
                 application.getDomain_id(),
                 ""
-        ));
+        );
         event.setEventSource(eventSource);
 
         application = applicationRepository.findByAppId(v2Event.getDestination_app_id());
-        EventDestination eventDestination = new EventDestination(new Subscriber(
+        Subscriber eventDestination = new Subscriber(
                 application.getApp_id(),
                 application.getType(),
                 application.getName(),
                 application.getUri(),
                 application.getDomain_id(),
                 ""
-        ));
+        );
         event.setEventDestination(eventDestination);
 
         EventTimeline eventTimeline = new EventTimeline(

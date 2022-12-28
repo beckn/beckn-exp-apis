@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 @Setter
 public class EventMessage {
     private String eventCode;
-    private String action;
     private String actionMessage;
     private String bapMessage;
     private String bppMessage;

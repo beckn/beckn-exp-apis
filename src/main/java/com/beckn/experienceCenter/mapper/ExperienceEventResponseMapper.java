@@ -26,6 +26,7 @@ public class ExperienceEventResponseMapper {
         for (V2Event event : events) {
             EventResponse eventResponse = new EventResponse();
             eventResponse.setEventId(event.getEvent_id());
+            eventResponse.setAction(event.getAction());
             eventResponse.setEvent(eventMapper.mapEventResponse(event));
             eventResponses.add(eventResponse);
         }
