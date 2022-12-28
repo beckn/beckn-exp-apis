@@ -1,0 +1,490 @@
+openapi: 3.0.0
+info:
+  version: 0.1.6
+  title: Experience Center API
+  description: Experience Center API to manage session and events.
+paths:
+  /xc/experience:
+    post:
+      tags:
+        - SetupExperience
+      summary: Setup an experience session to log events
+      requestBody:
+        description: Experience setup object for the components to create events
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienceSetup'
+            example:
+              experienceId: "99beb99f-7a46-463e-863d-1c03218fe13c"
+              experienceCenterId: "101"
+              eventSourceAppId: "2"
+              start_ts: "2022-12-28T07:10:30Z"
+      responses:
+        '200':
+          description: Experience session is created for logging the events
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienceId'
+              example:
+                "99beb99f-7a46-463e-863d-1c03218fe13c"
+        '404':
+          description: Experience session could not be created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "Application error"
+                code: "404"
+                path: "/xc/experience"
+                message: "Experience session could not be created"
+        '500':
+          description: Experience session could not be created due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "System error"
+                code: "500"
+                path: "/xc/experience"
+                message: "Error processing request {specific error log from exception/error}"
+    put:
+      tags:
+        - EndExperience
+      summary: End an experience session
+      requestBody:
+        description: Request object to end the experience
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExperienceEnd'
+            example:
+              experienceId: "99beb99f-7a46-463e-863d-1c03218fe13c"
+              end_ts: "2022-12-28T07:10:30Z"
+              experienceFeedback:
+                user_review: "y"
+                user_comments: "I liked the concept and it's implementation"
+      responses:
+        '200':
+          description: Experience session is successfully closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienceSession'
+              example: 
+                experienceId: "99beb99f-7a46-463e-863d-1c03218fe13c"
+                experienceCenterId: "101"
+                experienceSource:
+                  id: "2"
+                  type: "bap"
+                  name: "TravelBuddy"
+                  uri: "https://mock.protocoluri/travelbuddy"
+                  domainId: "2"
+                  domainName: "mobility"
+                active: true
+                experienceFeedback:
+                  user_review: "y"
+                  user_comments: "I liked the concept and it's implementation"
+                experienceTimeline:
+                  start_ts: "2022-12-28T07:10:30Z"
+                  end_ts: "2022-12-28T07:15:12Z"
+                  created_ts: "2022-12-28T07:10:30Z"
+                  lastModified_ts: "2022-12-28T07:15:12Z"
+        '404':
+          description: Session could not be closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "Application error"
+                code: "404"
+                path: "/xc/experience"
+                message: "Experience session could not be closed"
+        '500':
+          description: Session could not be closed due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "System error"
+                code: "500"
+                path: "/xc/experience"
+                message: "Error processing request {specific error log from exception/error}"
+  /event/{experienceId}:
+    parameters:
+      - name: experienceId
+        description: Session id (unique id based on domain and app details)
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/ExperienceId'
+        example:
+          "99beb99f-7a46-463e-863d-1c03218fe13c"
+    get:
+      tags:
+        - GetEvent
+      summary: Get the list of events for the Experience session
+      responses:
+        '200':
+          description: List of events retrieved for experience session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExperienceSessionLog'
+              example:
+                experienceSession:
+                  experienceId: "99beb99f-7a46-463e-863d-1c03218fe13c"
+                  experienceCenterId: "101"
+                  experienceSource:
+                    id: "2"
+                    type: "bap"
+                    name: "TravelBuddy"
+                    uri: "https://mock.protocoluri/travelbuddy"
+                    domainId: "2"
+                    domainName: "mobility"
+                  active: "y"
+                  experienceFeedback:
+                    user_review: 
+                    user_comments: 
+                  experienceTimeline:
+                    start_ts: "2022-12-28T07:10:30Z"
+                    end_ts: 
+                    created_ts: "2022-12-28T07:10:30Z"
+                    lastModified_ts: "2022-12-28T07:15:12Z"
+                events:
+                  - eventId: 15
+                    action: "string"
+                    event:
+                      eventSource:
+                        id: "2"
+                        type: "bap"
+                        name: "TravelBuddy"
+                        uri: "https://mock.protocoluri/travelbuddy"
+                        domainId: "2"
+                        domainName: "mobility"
+                      eventDestination:
+                        id: "2"
+                        type: "bap"
+                        name: "TravelBuddy"
+                        uri: "https://mock.protocoluri/travelbuddy"
+                        domainId: "2"
+                        domainName: "mobility"
+                      eventMessage:
+                        eventCode: "motb_drop_loc"
+                        actionMessage: "selecting drop location"
+                        bapMessage: "I have submitted my drop location"
+                        bppMessage: "I am waiting for ride requests"
+                      eventTimeline:
+                        start_ts: "2022-12-28T07:12:09Z"
+                        end_ts: 
+                        created_ts: "2022-12-28T07:12:22Z"
+                        lastModified_ts: "2022-12-28T07:12:22Z"
+                      payload: {}
+                  - eventId: 16
+                    action: "string"
+                    event:
+                      eventSource:
+                        id: "2"
+                        type: "bap"
+                        name: "TravelBuddy"
+                        uri: "https://mock.protocoluri/travelbuddy"
+                        domainId: "2"
+                        domainName: "mobility"
+                      eventDestination:
+                        id: "1"
+                        type: "gateway"
+                        name: "Gateway"
+                        uri: "https://mock.protocoluri/gateway"
+                        domainId: "1"
+                        domainName: "core"
+                      eventMessage:
+                        eventCode: "motb_drop_loc"
+                        actionMessage: "selecting drop location"
+                        bapMessage: "I have submitted my drop location"
+                        bppMessage: "I am waiting for ride requests"
+                      eventTimeline:
+                        start_ts: "2022-12-28T07:12:09Z"
+                        end_ts: 
+                        created_ts: "2022-12-28T07:12:22Z"
+                        lastModified_ts: "2022-12-28T07:12:22Z"
+                      payload: {}
+                
+        '404':
+          description: Event log not found for sessionId
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "Application error"
+                code: "404"
+                path: "/event/{experienceId}"
+                message: "Event log not found for sessionId"
+        '500':
+          description: Event log could not be retrieved due to unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+              example:
+                type: "System error"
+                code: "500"
+                path: "/event/{experienceId}"
+                message: "Error processing request {specific error log from exception/error}"
+components:
+  schemas:
+    ExperienceId:
+      description: The unique identifier of a session
+      type: string
+    ExperienceCenterId:
+      description: Experience center id
+      type: string
+    ExperienceSetup:
+      description: Schema to create session for logging events
+      type: object
+      required:
+        - experienceId
+        - experienceCenterId
+        - eventSourceAppId
+        - start_ts
+      properties:
+        experienceId:
+          $ref: '#/components/schemas/ExperienceId'
+        experienceCenterId:
+          $ref: '#/components/schemas/ExperienceCenterId'
+        eventSourceAppId:
+          type: string
+          description: Application id for the source (bap_id, app_id)
+        start_ts:
+          type: string
+          description: Time when the session is started
+    ExperienceEnd:
+      description: Object to end an experience sesion
+      type: object
+      required:
+        - experienceId
+        - start_ts
+      properties:
+        experienceId:
+          $ref: '#/components/schemas/ExperienceId'
+        end_ts:
+          type: string
+          description: Time when the session is completed
+        experienceFeedback:
+          $ref: '#/components/schemas/UserFeedback'
+    UserFeedback:
+      description: Feedback from user
+      type: object
+      required:
+        - user_review
+        - user_comments
+      properties:
+        user_review:
+          type: string
+          description: Did user like the experience?
+        user_comments:
+          type: string
+          description: User comments
+    ExperienceSessionLog:
+      description: Experience session log
+      type: object
+      properties:
+        experienceSession:
+          $ref: '#/components/schemas/ExperienceSession'
+        events:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/EventLog'
+    ExperienceSession:
+      description: Schema to create session for logging events
+      type: object
+      required:
+        - experienceId
+        - eventSourceAppId
+      properties:
+        experienceId:
+          $ref: '#/components/schemas/ExperienceId'
+        experienceCenterId:
+          $ref: '#/components/schemas/ExperienceCenterId'
+        experienceSource:
+          description: Application details where the experience is started
+          allOf:
+              - "$ref": '#/components/schemas/Subscriber'  
+        active:
+          type: string
+          description: Indicator to show session status
+        experienceFeedback:
+          $ref: '#/components/schemas/UserFeedback'
+        experienceTimeline:
+          $ref: '#/components/schemas/ExperienceTimeline'
+    ExperienceTimeline:
+      description: Object to manage experience timeline
+      type: object
+      properties:
+        start_ts:
+          type: string
+          description: Time when the event is started
+        end_ts:
+          type: string
+          description: Time when the event was completed
+        created_ts:
+          type: string
+          description: Time when the event is created
+        lastModified_ts:
+          type: string
+          description: Time when the event was last modified
+    EventLog:
+      description: Response object for event log
+      type: object
+      required:
+        - eventId
+      properties:
+        eventId:
+          type: integer
+          description: Event id (unique id that was created as a result of new event)
+        action:
+          type: string
+          description: Protocol action
+        event:
+          $ref: '#/components/schemas/Event'
+    Event:
+      description: Object to manage event data
+      type: object
+      required:
+        - eventSource
+        - eventDestination
+        - eventMessage
+        - eventTimeline
+      properties:
+        eventSource:
+          $ref: '#/components/schemas/EventSource'
+        eventDestination:
+          $ref: '#/components/schemas/EventDestination'
+        eventMessage:
+          $ref: '#/components/schemas/Message'
+        eventTimeline:
+          $ref: '#/components/schemas/EventTimeline'
+        payload:
+          type: object
+    EventSource:
+      description: Event source details
+      allOf:
+        - "$ref": '#/components/schemas/Subscriber'
+    EventDestination:
+      description: Event destination details
+      allOf:
+        - "$ref": '#/components/schemas/Subscriber'
+    Subscriber:
+      description: Subscriber details
+      type: object
+      required:
+        - id
+        - type
+        - name
+      properties:
+        id:
+          type: string
+          description: Subscriber id for application
+        type:
+          type: string
+          description: Application type
+          enum:
+            - bap
+            - bpp
+            - gateway
+        name:
+          type: string
+          description: Application name of subscriber
+        uri:
+          type: string
+          description: Application uri of subscriber
+        domainId:
+          type: string
+          description: Domain id for application
+        domainName:
+          type: string
+          description: Domain name for application
+    Message:
+      description: Message object for event
+      type: object
+      required:
+        - eventCode
+        - actionMessage
+        - bapMessage
+        - bppMessage
+      properties:
+        eventCode:
+          type: string
+          description: Code for event
+        actionMessage:
+          $ref: '#/components/schemas/ActionMessage'
+        bapMessage:
+          $ref: '#/components/schemas/BAPMessage'
+        bppMessage:
+          $ref: '#/components/schemas/BPPMessage'
+    ActionMessage:
+      $ref: '#/components/schemas/MessageData'
+    BAPMessage:
+      $ref: '#/components/schemas/MessageData'
+    BPPMessage:
+      $ref: '#/components/schemas/MessageData'
+    MessageData:
+      description: Object to hold message
+      type: string
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: Message
+    EventTimeline:
+      description: Object to manage event timeline
+      type: object
+      properties:
+        start_ts:
+          type: string
+          description: Time when the event is started
+        end_ts:
+          type: string
+          description: Time when the event was completed
+        created_ts:
+          type: string
+          description: Time when the event is created
+        lastModified_ts:
+          type: string
+          description: Time when the event was last modified
+    Error:
+      type: object
+      required:
+        - message
+      properties:
+        type:
+          description: Type of error
+          type: string
+        code:
+          description: Event specific error code
+          type: string
+        path:
+          description: Path to json schema generating the error. Used only during json schema validation errors
+          type: string
+        message:
+          description: Human readable error message from event collector API
+          type: string
+  securitySchemes:
+    ApiKey:
+      type: apiKey
+      in: header
+      name: X-Api-Key
+security:
+  - ApiKey: []
+servers:
+  - url: https://api.experience.becknprotocol.io/v2
+    variables: {}
