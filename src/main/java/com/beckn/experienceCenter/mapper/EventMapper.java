@@ -1,5 +1,6 @@
 package com.beckn.experienceCenter.mapper;
 
+import com.beckn.experienceCenter.cache.DatabaseCache;
 import com.beckn.experienceCenter.dto.v2response.Event;
 import com.beckn.experienceCenter.dto.v2response.EventMessage;
 import com.beckn.experienceCenter.dto.v2response.EventTimeline;
@@ -24,7 +25,7 @@ public class EventMapper {
     public Event mapEventResponse(V2Event v2Event) {
         Event event = new Event();
 
-        V2EventMessage v2EventMessage = eventMessageRepository.findByCode(v2Event.getEvent_code());
+        V2EventMessage v2EventMessage = DatabaseCache.EVENT_MESSAGE_MAP.get(v2Event.getEvent_code());
         EventMessage eventMessage = new EventMessage(
                 v2EventMessage.getCode(),
                 v2EventMessage.getAction_message(),
@@ -33,7 +34,7 @@ public class EventMapper {
         );
         event.setEventMessage(eventMessage);
 
-        V2Application application = applicationRepository.findByAppId(v2Event.getSource_app_id());
+        V2Application application = DatabaseCache.APPLICATION_MAP.get(v2Event.getSource_app_id());
         Subscriber eventSource = new Subscriber(
                 application.getApp_id(),
                 application.getType(),
@@ -44,7 +45,7 @@ public class EventMapper {
         );
         event.setEventSource(eventSource);
 
-        application = applicationRepository.findByAppId(v2Event.getDestination_app_id());
+        application = DatabaseCache.APPLICATION_MAP.get(v2Event.getDestination_app_id());
         Subscriber eventDestination = new Subscriber(
                 application.getApp_id(),
                 application.getType(),

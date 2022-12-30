@@ -1,5 +1,6 @@
 package com.beckn.experienceCenter.controller;
 
+import com.beckn.experienceCenter.cache.DatabaseCache;
 import com.beckn.experienceCenter.dto.v2request.V2ExperienceDTO;
 import com.beckn.experienceCenter.dto.v2request.V2UpdateSessionDto;
 import com.beckn.experienceCenter.dto.v2response.ExperienceEventResponse;
@@ -23,12 +24,12 @@ public class V2ExperienceCenterController {
         if (inputSession.getExperienceId() == null) {
             return new ResponseEntity<>("Experience id is missing.", HttpStatus.BAD_REQUEST);
         }
-        if (inputSession.getEventSourceAppId() == null) {
-            return new ResponseEntity<>("Source app id is missing.", HttpStatus.BAD_REQUEST);
+        if (inputSession.getEventSourceAppId() == null || DatabaseCache.APPLICATION_MAP.get(inputSession.getEventSourceAppId()) == null) {
+            return new ResponseEntity<>("Source app id is missing or not found in store.", HttpStatus.BAD_REQUEST);
         }
         try {
             String experienceId = experienceCenterService.setupExperienceSession(inputSession);
-            return ResponseEntity.ok("Experience Id : " + experienceId);
+            return ResponseEntity.ok(experienceId);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -60,5 +61,11 @@ public class V2ExperienceCenterController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
 
+    }
+
+    @GetMapping(value = "/event/event-message")
+    public ResponseEntity<?> reloadEventMessages() {
+        experienceCenterService.reloadEventMessages();
+        return ResponseEntity.ok("");
     }
 }

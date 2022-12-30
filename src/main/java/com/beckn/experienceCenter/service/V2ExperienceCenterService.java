@@ -1,5 +1,6 @@
 package com.beckn.experienceCenter.service;
 
+import com.beckn.experienceCenter.cache.DatabaseCache;
 import com.beckn.experienceCenter.dto.v2request.V2ExperienceDTO;
 import com.beckn.experienceCenter.dto.v2request.V2UpdateSessionDto;
 import com.beckn.experienceCenter.dto.v2response.ExperienceEventResponse;
@@ -8,11 +9,9 @@ import com.beckn.experienceCenter.exception.ExperienceException;
 import com.beckn.experienceCenter.mapper.ExperienceEventResponseMapper;
 import com.beckn.experienceCenter.mapper.ExperienceResponseMapper;
 import com.beckn.experienceCenter.mapper.V2ExperienceDtoToExperienceMapper;
-import com.beckn.experienceCenter.model.Experience;
-import com.beckn.experienceCenter.model.V2Application;
-import com.beckn.experienceCenter.model.V2Event;
-import com.beckn.experienceCenter.model.V2Experience;
+import com.beckn.experienceCenter.model.*;
 import com.beckn.experienceCenter.repository.V2ApplicationRepository;
+import com.beckn.experienceCenter.repository.V2EventMessageRepository;
 import com.beckn.experienceCenter.repository.V2EventRepository;
 import com.beckn.experienceCenter.repository.V2ExperienceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +34,9 @@ public class V2ExperienceCenterService {
     private V2EventRepository eventRepository;
 
     @Autowired
+    private V2EventMessageRepository eventMessageRepository;
+
+    @Autowired
     private V2ExperienceDtoToExperienceMapper mapper;
 
     @Autowired
@@ -51,7 +53,7 @@ public class V2ExperienceCenterService {
         if (experience == null) {
             throw new ExperienceException("", "", "E-101", "No data found in database for ExperienceId : " + experienceId);
         }
-        V2Application application = applicationRepository.findByAppId(experience.getApp_id());
+        V2Application application = DatabaseCache.APPLICATION_MAP.get(experience.getApp_id());
         if (application == null) {
             //throw new ExperienceException("", "", "E-102", "No data found in database for App id : " + experience.getApp_id());
         }
@@ -89,11 +91,26 @@ public class V2ExperienceCenterService {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
-        V2Application application = applicationRepository.findByAppId(experience.getApp_id());
+        V2Application application = DatabaseCache.APPLICATION_MAP.get(experience.getApp_id());
         if (application == null) {
             //throw new ExperienceException("", "", "E-102", "No data found in database for App id : " + experience.getApp_id());
         }
         experience = experienceRepository.save(experience);
         return experienceResponseMapper.mapExperienceResponse(experience, application);
+    }
+
+
+    public void reloadEventMessages() {
+        List<V2EventMessage> v2EventMessages = eventMessageRepository.findAll();
+        DatabaseCache.EVENT_MESSAGE_MAP.clear();
+        for (V2EventMessage eventMessage : v2EventMessages) {
+            DatabaseCache.EVENT_MESSAGE_MAP.put(eventMessage.getCode(), eventMessage);
+        }
+
+        List<V2Application> v2Applications = applicationRepository.findAll();
+        DatabaseCache.APPLICATION_MAP.clear();
+        for (V2Application application : v2Applications) {
+            DatabaseCache.APPLICATION_MAP.put(application.getApp_id(), application);
+        }
     }
 }
