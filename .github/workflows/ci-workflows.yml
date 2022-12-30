@@ -27,4 +27,5 @@ jobs:
           docker rm beckn-exp-apis
           docker run -d -p 8082:8082 --name beckn-exp-apis beckn-exp-apis:$SHORT_SHA
           echo "printing docker image sha"
-          docker images --no-trunc --quiet client:$SHORT_SHA
+          docker images --no-trunc --quiet beckn-exp-apis:$SHORT_SHA
+          curl --location --request GET 'https://api.experience.becknprotocol.io/v2/event/event-message' --header 'Access-Control-Allow-Origin: *'
